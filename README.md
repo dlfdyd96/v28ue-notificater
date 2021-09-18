@@ -114,6 +114,14 @@ async getHttpRequest(givenUrl: string) {
 
 그럼 나머지 테스트 코드도 작성해봅시다.
 
-```
+```ts
 
 ```
+
+<hr/>
+
+## 참고
+
+1. [🖨 '웹 크롤러' 좀 그만 만들어라](https://velog.io/@mowinckel/%EC%9B%B9-%ED%81%AC%EB%A1%A4%EB%A7%81-I)
+
+- 결과적으로 내가 만들고 있는건 크롤러가 아니라 Watcher? 겠네요 수정해야게땀; ㅎㅎ
