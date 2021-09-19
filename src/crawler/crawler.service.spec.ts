@@ -3,19 +3,28 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import { CrawlerService } from './crawler.service';
 import { AxiosResponse } from 'axios';
+import {
+  IncomingWebhookResult,
+  IncomingWebhookSendArguments,
+} from '@slack/webhook';
+import exp from 'constants';
+import { NotifyModule } from 'src/notify/notify.module';
+import { NotifyService } from 'src/notify/notify.service';
 
 describe('CrawlerService', () => {
   let crawlerService: CrawlerService;
   let httpService: HttpService;
+  let notifyService: NotifyService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [HttpModule],
+      imports: [HttpModule, NotifyModule],
       providers: [CrawlerService],
     }).compile();
 
     crawlerService = module.get<CrawlerService>(CrawlerService);
     httpService = module.get<HttpService>(HttpService);
+    notifyService = module.get<NotifyService>(NotifyService);
   });
 
   it('should be defined', () => {
@@ -79,7 +88,24 @@ describe('CrawlerService', () => {
       expect(result).toEqual(false);
     });
 
-    it.todo('should check Sold Out');
-    it.todo('Notify to SlackNotifer');
+    it('should notify to slack', async () => {
+      // given
+      const requestNotify: IncomingWebhookSendArguments = {
+        text: 'Buy It! Hurry Up!',
+      };
+      const resultNotify: IncomingWebhookResult = {
+        text: requestNotify.text,
+      };
+      const notifyServiceNotifySpy = jest
+        .spyOn(notifyService, 'notify')
+        .mockResolvedValue(resultNotify);
+
+      // when
+      const result = await crawlerService.notify();
+
+      // then
+      expect(notifyServiceNotifySpy).toHaveBeenCalledTimes(1);
+      expect(result).toBe(resultNotify);
+    });
   });
 });

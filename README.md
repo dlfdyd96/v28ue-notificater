@@ -5,13 +5,13 @@
 
 그래서 이번 기회에 NestJS에 Jest 테스트 도구로 테스트 주도 개발론을 직접 적용 해봄으로써 TDD에 한 걸음 더 다 가가고, 또한 Toss에서 Web Automation 직군(자꾸떨어진다 ㅠㅠ)에서 크롤링 기술을 요구 하는 등 크롤링 기술을 이번 기회에 적용해본다.
 
-## Overview
+## 1. Overview
 
-### Architecture
+### 1-1. Architecture
 
 ![architecture](./images/overview.png)
 
-### FlowChart
+### 1-2. FlowChart
 
 ![FlowChart](./images/flowchart.png)
 
@@ -20,7 +20,7 @@
 - [ ] Slack Notifier
 - [ ] Run on Docker Container
 
-### Setting Up Package
+### 1-3. Setting Up Package
 
 우선 필요한 패키지들을 설치해줍니다.
 
@@ -45,9 +45,12 @@
 }
 ```
 
+<br/>
+<hr>
+
 ## 2. Cralwer Service
 
-crawler service를 만들어 줍니다.
+### 2-1. crawler service를 만들어 줍니다.
 
 ```
 > nest generate module cralwer
@@ -56,7 +59,7 @@ crawler service를 만들어 줍니다.
 
 그러면 `cralwer.service.spec.ts` 파일이 만들어지는데 이 파일이 `crawler.service.ts` 에 대한 테스트를 담당합니다.
 
-우선 시나리오를 통해 `CrawlerService` 에서 어떤 것을 해야할 지 파악해보죠.
+### 2-2. 우선 시나리오를 통해 `CrawlerService` 에서 어떤 것을 해야할 지 파악해보죠.
 
 1. Get URL HTTP Request
 
@@ -66,7 +69,7 @@ crawler service를 만들어 줍니다.
 
 4. Notify Slack Notifier
 
-그리고 Test 코드를 먼저 작성합시다. (TDD)
+### 2-3. 그리고 Test 코드를 먼저 작성합시다. (TDD)
 
 ```ts
 describe('getHTTPRequest()', () => {
@@ -80,7 +83,7 @@ describe('getHTTPRequest()', () => {
 
 하나 하나씩 Test들을 풀어 나갑시다.
 
-### 1. Get URL HTTP Request
+### 2-4. Get URL HTTP Request
 
 ```ts
 it('should request http given url', async () => {
@@ -95,7 +98,10 @@ it('should request http given url', async () => {
 });
 ```
 
-이렇게 작성하고 돌리시면 당연히 에러가 나겠죠. 당연합니다. 이제 이 코드를 잘 돌아가게끔 수정합시다.
+이렇게 작성하고 돌리시면 당연히 에러가 나겠죠. 당연합니다.
+
+### 2-5. 이제 이 코드를 잘 돌아가게끔 수정합시다.
+
 (요즘 axios는 rxjs를 써서 하는게 대세인가봅니다... 배울게 너무 많아 🥲)
 
 ```ts
@@ -109,15 +115,29 @@ async getHttpRequest(givenUrl: string) {
 }
 ```
 
+### 2-6. 결과
+
 그럼 결과 메세지로 이렇게 뜨고 `passed` 되었다고 합니다.
 ![test_result](./images/testResult.png)
 
-그럼 나머지 테스트 코드도 작성해봅시다.
+그럼 나머지 테스트 코드도 작성해봅시다. (링크)
 
-```ts
+<br/>
+<hr>
 
+## 3. NotifyModule
+
+알림을 줘야하는데 알림은 slack 에 message를 보내는 행위로 알림을 쳤습니다.
+
+### 3-1. Setting Up
+
+```sh
+> npm i @slack/client
 ```
 
+### 3-2.
+
+<br/>
 <hr/>
 
 ## 참고
