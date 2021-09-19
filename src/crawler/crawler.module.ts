@@ -6,5 +6,6 @@ import { CrawlerService } from './crawler.service';
 @Module({
   imports: [HttpModule, NotifyModule],
   providers: [CrawlerService],
+  exports: [CrawlerService],
 })
 export class CrawlerModule {}

@@ -231,8 +231,56 @@ it('should notify to slack', async () => {
 ### 3-3. CrawlerService notify method 작성
 
 ```ts
+import { Injectable } from '@nestjs/common';
+import {
+  IncomingWebhook,
+  IncomingWebhookResult,
+  IncomingWebhookSendArguments,
+} from '@slack/client';
+import { InjectSlack } from 'nestjs-slack-webhook';
 
+@Injectable()
+export class NotifyService {
+  constructor(
+    @InjectSlack()
+    private readonly slack: IncomingWebhook,
+  ) {}
+
+  async notify(
+    args: IncomingWebhookSendArguments,
+  ): Promise<IncomingWebhookResult> {
+    return await this.slack.send(args);
+  }
+}
 ```
+
+<br/>
+<hr/>
+
+## 4. Task Scheduler
+
+### 4-1. Setting Up Task Scheduler
+
+스케쥴링에 필요한 패키지를 설치.
+
+```sh
+> npm install --save @nestjs/schedule
+> npm install --save-dev @types/cron
+```
+
+### 4-2.
+
+<br/>
+<hr/>
+
+## 아이고난! 😫
+
+### 1. NestJS의 Mocking이 나에겐 쉽지가 않다!
+
+> **참고**
+>
+> - [JHyeok - NestJS에서 단위 테스트 작성하기](https://jhyeok.com/nestjs-unit-test/)
+> - [Nest + Jest unit test (1~5) Mocking (강츄!)](https://darrengwon.tistory.com/998?category=915252)
 
 <br/>
 <hr/>

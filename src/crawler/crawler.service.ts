@@ -18,7 +18,7 @@ export class CrawlerService {
     const result = await firstValueFrom(
       this.httpService.get(givenUrl).pipe(map((response) => response.data)),
     );
-    CrawlerService.logger.log(result);
+    // CrawlerService.logger.log(result);
     return result;
   }
 
