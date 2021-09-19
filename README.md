@@ -132,10 +132,107 @@ async getHttpRequest(givenUrl: string) {
 ### 3-1. Setting Up
 
 ```sh
-> npm i @slack/client
+> npm i nestjs-slack-webhook
+> npm i @slack/client @nestjs/config
 ```
 
-### 3-2.
+- SlackConfig 등록 (webhook)
+
+  - `.env` file
+    ```env
+    SLACK_WEBHOOK_URL=https://hooks.slack.com/services/T02EQKL🤫🤫🤫🤫
+    ```
+  - `src/config/slack.config.ts` file
+
+    ```ts
+    import { registerAs } from '@nestjs/config';
+    import { SlackOptions } from 'nestjs-slack-webhook';
+
+    export default registerAs(
+      'slack',
+      (): SlackOptions => ({
+        url: process.env.SLACK_WEBHOOK_URL,
+      }),
+    );
+    ```
+
+- SlackModule Global로 등록
+
+  - `src/config/slack.config.ts` file
+
+    ```ts
+    // ...
+    import { ConfigModule, ConfigService } from '@nestjs/config';
+    import slackConfig from './config/slack.config';
+    import { CrawlerModule } from './crawler/crawler.module';
+
+    @Module({
+      imports: [
+        ConfigModule.forRoot({
+          ignoreEnvFile: true,
+          load: [slackConfig],
+        }),
+        SlackModule.forRootAsync({
+          imports: [ConfigModule],
+          inject: [ConfigService],
+          useFactory: (config) => config.get('slack'),
+        }),
+        // ...
+      ],
+      // ...
+    })
+    export class AppModule {}
+    ```
+
+- NotifyService
+
+  ```ts
+  import { Injectable } from '@nestjs/common';
+  import { IncomingWebhook, IncomingWebhookSendArguments } from '@slack/client';
+  import { InjectSlack } from 'nestjs-slack-webhook';
+
+  @Injectable()
+  export class NotifyService {
+    constructor(
+      @InjectSlack()
+      private readonly slack: IncomingWebhook,
+    ) {}
+
+    async notify(args: IncomingWebhookSendArguments) {
+      return await this.slack.send(args);
+    }
+  }
+  ```
+
+### 3-2. CrawlerService Test Code 작성
+
+```ts
+it('should notify to slack', async () => {
+  // given
+  const requestNotify: IncomingWebhookSendArguments = {
+    text: 'Buy It! Hurry Up!',
+  };
+  const resultNotify: IncomingWebhookResult = {
+    text: requestNotify.text,
+  };
+  const notifyServiceNotifySpy = jest
+    .spyOn(notifyService, 'notify')
+    .mockResolvedValue(resultNotify);
+
+  // when
+  const result = await crawlerService.notify();
+
+  // then
+  expect(notifyServiceNotifySpy).toHaveBeenCalledTimes(1);
+  expect(result).toBe(resultNotify);
+});
+```
+
+### 3-3. CrawlerService notify method 작성
+
+```ts
+
+```
 
 <br/>
 <hr/>

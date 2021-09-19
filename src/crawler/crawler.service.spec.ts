@@ -7,9 +7,11 @@ import {
   IncomingWebhookResult,
   IncomingWebhookSendArguments,
 } from '@slack/webhook';
-import exp from 'constants';
 import { NotifyModule } from 'src/notify/notify.module';
 import { NotifyService } from 'src/notify/notify.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import slackConfig from 'src/config/slack.config';
+import { SlackModule, SlackOptions } from 'nestjs-slack-webhook';
 
 describe('CrawlerService', () => {
   let crawlerService: CrawlerService;
@@ -18,13 +20,25 @@ describe('CrawlerService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [HttpModule, NotifyModule],
-      providers: [CrawlerService],
+      imports: [
+        HttpModule,
+        ConfigModule.forRoot({
+          // ignoreEnvFile: true,
+          load: [slackConfig],
+        }),
+        SlackModule.forRootAsync({
+          imports: [ConfigModule],
+          inject: [ConfigService],
+          useFactory: (config: ConfigService) =>
+            config.get<SlackOptions>('slack'),
+        }),
+      ],
+      providers: [CrawlerService, NotifyService],
     }).compile();
 
     crawlerService = module.get<CrawlerService>(CrawlerService);
     httpService = module.get<HttpService>(HttpService);
-    notifyService = module.get<NotifyService>(NotifyService);
+    // notifyService = module.get<NotifyService>(NotifyService);
   });
 
   it('should be defined', () => {
@@ -91,21 +105,18 @@ describe('CrawlerService', () => {
     it('should notify to slack', async () => {
       // given
       const requestNotify: IncomingWebhookSendArguments = {
-        text: 'Buy It! Hurry Up!',
+        text: '(test-code) Buy It! Hurry Up!',
       };
       const resultNotify: IncomingWebhookResult = {
-        text: requestNotify.text,
+        text: 'ok',
       };
-      const notifyServiceNotifySpy = jest
-        .spyOn(notifyService, 'notify')
-        .mockResolvedValue(resultNotify);
 
       // when
-      const result = await crawlerService.notify();
+      const result = await crawlerService.notify(requestNotify);
 
       // then
-      expect(notifyServiceNotifySpy).toHaveBeenCalledTimes(1);
-      expect(result).toBe(resultNotify);
+      // expect(notifyService.notify).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(resultNotify);
     });
   });
 });
