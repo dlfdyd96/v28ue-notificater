@@ -268,7 +268,70 @@ export class NotifyService {
 > npm install --save-dev @types/cron
 ```
 
-### 4-2.
+### 4-2. Scheduler
+
+매 5초마다 request를 요청하는 scheduler를 만든다. (넘 심한가...?)
+
+```ts
+@Injectable()
+export class TaskSchedulerService {
+  private static readonly logger = new Logger(TaskSchedulerService.name);
+
+  constructor(
+    private readonly crawlerService: CrawlerService,
+    private readonly schedulerRegistry: SchedulerRegistry,
+  ) {}
+
+  @Cron(CronExpression.EVERY_5_SECONDS, {
+    name: 'V28UE_WATCHING',
+  })
+  async handleWatchingStock() {
+    const requestUrl =
+      'https://www.jooyonshop.co.kr/goods/goods_view.php?goodsNo=1000000165';
+    // TaskSchedulerService.logger.debug('아이고난!');
+    const resultRequest = await this.crawlerService.getHttpRequest(requestUrl);
+    const isSoldOut =
+      this.crawlerService.parseHtmlAndCheckIsSoldOut(resultRequest);
+    if (!isSoldOut) {
+      const job = this.schedulerRegistry.getCronJob('V28UE_WATCHING');
+      job.stop();
+      TaskSchedulerService.logger.debug('떳따!');
+
+      this.crawlerService.notify({ text: 'Buy It! Hurry Up!' });
+    } else {
+      TaskSchedulerService.logger.debug('아직 안떴따');
+    }
+  }
+}
+```
+
+<br/>
+<hr/>
+
+## 5. Docker
+
+### 5-1. Dockerfile
+
+```docker
+FROM node:lts
+
+WORKDIR /app
+# 소스 추가
+COPY . .
+COPY package*.json ./
+RUN npm install
+COPY .env .env
+# 소스 빌드
+RUN npm run build
+CMD ["node", "dist/main"]
+```
+
+### 5-2. Docker build & run
+
+```sh
+> docker build -t nestjs-api:latest .
+> docker run -d --name nestjs-api -p 3000:3000 nestjs-api:latest
+```
 
 <br/>
 <hr/>
