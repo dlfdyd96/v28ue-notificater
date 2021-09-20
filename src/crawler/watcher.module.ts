@@ -1,11 +1,11 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { NotifyModule } from 'src/notify/notify.module';
-import { CrawlerService } from './crawler.service';
+import { WatcherService } from './watcher.service';
 
 @Module({
   imports: [HttpModule, NotifyModule],
-  providers: [CrawlerService],
-  exports: [CrawlerService],
+  providers: [WatcherService],
+  exports: [WatcherService],
 })
-export class CrawlerModule {}
+export class WatcherModule {}

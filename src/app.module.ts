@@ -5,7 +5,7 @@ import { SlackModule } from 'nestjs-slack-webhook';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import slackConfig from './config/slack.config';
-import { CrawlerModule } from './crawler/crawler.module';
+import { WatcherModule } from './crawler/watcher.module';
 import { NotifyModule } from './notify/notify.module';
 import { TaskSchedulerModule } from './task-scheduler/task-scheduler.module';
 
@@ -14,7 +14,7 @@ import { TaskSchedulerModule } from './task-scheduler/task-scheduler.module';
     ConfigModule.forRoot({
       load: [slackConfig],
     }),
-    CrawlerModule,
+    WatcherModule,
     NotifyModule,
     SlackModule.forRootAsync({
       imports: [ConfigModule],

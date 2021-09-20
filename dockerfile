@@ -1,21 +1,15 @@
-FROM node:lts
+# First stage: build and test
+FROM node:10-alpine as nodebuild    
+WORKDIR /app                        
+COPY . .                            
+RUN npm install && npm run build &&  npm run test && npm run test:cov
 
-
-WORKDIR /app
-
-
-# 소스 추가
-COPY . .
-
+# Second stage: assemble the runtime image
+FROM node:10-alpine as noderun      
+WORKDIR /app                        
+COPY --from=nodebuild /app/dist/ ./ 
 COPY package*.json ./
-
-RUN npm install
-
-
-COPY .env .env
-
-
-# 소스 빌드
-RUN npm run build
-
-CMD ["node", "dist/main"]
+COPY .env .env               
+RUN npm install --only=prod         
+EXPOSE 3000
+ENTRYPOINT node /app/main       

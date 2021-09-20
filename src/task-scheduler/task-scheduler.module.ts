@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { CrawlerModule } from 'src/crawler/crawler.module';
+import { WatcherModule } from 'src/crawler/watcher.module';
 import { TaskSchedulerService } from './task-scheduler.service';
 
 @Module({
-  imports: [CrawlerModule],
+  imports: [WatcherModule],
   providers: [TaskSchedulerService],
 })
 export class TaskSchedulerModule {}

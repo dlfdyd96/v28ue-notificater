@@ -6,8 +6,8 @@ import { firstValueFrom, map } from 'rxjs';
 import { NotifyService } from 'src/notify/notify.service';
 
 @Injectable()
-export class CrawlerService {
-  private static readonly logger = new Logger(CrawlerService.name);
+export class WatcherService {
+  private static readonly logger = new Logger(WatcherService.name);
 
   constructor(
     private readonly httpService: HttpService,
