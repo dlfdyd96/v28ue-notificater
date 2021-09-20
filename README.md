@@ -478,6 +478,44 @@ test를 돌릴 image와 runtime 이미지를 따로 build한다.
 >
 > [Using Docker Multi-Stage Builds To Build And Test Applications](https://www.feval.ca/posts/multistage-docker/)
 
+### 3. 이러한 도커 수행 과정을 docker-compose로 구성해보자.
+
+```yaml
+version: '3.8'
+
+services:
+  test:
+    container_name: noti-test
+    image: noti-test:latest
+    build:
+      context: .
+      target: nodebuild
+      dockerfile: ./Dockerfile
+  run:
+    container_name: noti
+    image: noti:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - noti-network
+    restart: unless-stopped
+
+networks:
+  noti-network:
+```
+
+실행은 background에서 하도록 하자.
+
+```sh
+> docker-compose up -d test
+> docker-compose up -d run
+```
+
+❓ test를 하고 test result를 복사하려는데 어떻게 하지..?
+
 <br/>
 <hr/>
 

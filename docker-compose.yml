@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  test:
+    container_name: noti-test
+    image: noti-test:latest
+    build:
+      context: .
+      target: nodebuild
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/app/coverage
+  run:
+    container_name: noti
+    image: noti:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - noti-network
+    restart: unless-stopped
+
+networks:
+  noti-network:
