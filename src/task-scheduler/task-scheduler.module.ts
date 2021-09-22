@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { WatcherModule } from 'src/crawler/watcher.module';
+import { WatcherModule } from 'src/watcher/watcher.module';
 import { TaskSchedulerService } from './task-scheduler.service';
 import { TaskSchedulerController } from './task-scheduler.controller';
 

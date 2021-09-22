@@ -33,6 +33,46 @@
 
 ### 1. 재고 알림 REST API
 
+controller 를 만들어 줍시다.
+
+```sh
+> nest generate controller task-scheduler
+
+```
+
+**PART: Create**
+
+dto부터 만들어 줍니다. dto를 만들어 주기 전에 validator를 설치해줘야 합니다.
+
+```sh
+npm i class-validator class-transformer
+```
+
+main 에 pipeline을 설정해 줍니다.
+
+```ts
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+Create
+
 ### 2. 재고 확인 parser 수정
 
 ### 3. Test 환경, 배포 환경 구분
@@ -58,3 +98,7 @@
 ### 1. ELK Container 생성
 
 ### 2. NestJS Log 생성
+
+```
+
+```

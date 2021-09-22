@@ -31,6 +31,8 @@
     "@slack/webhook": "^6.0.0",
     "@types/cheerio": "^0.22.30",
     "cheerio": "^1.0.0-rc.10",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "joi": "^17.4.2",
     "nestjs-slack-webhook": "^8.1.0",
     "reflect-metadata": "^0.1.13",
