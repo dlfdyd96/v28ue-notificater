@@ -1,8 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { IncomingWebhookSendArguments } from '@slack/client';
+import { throws } from 'assert';
 import { load } from 'cheerio';
-import { firstValueFrom, map } from 'rxjs';
+import { catchError, firstValueFrom, map } from 'rxjs';
 import { NotifyService } from 'src/notify/notify.service';
 
 @Injectable()
@@ -16,17 +17,19 @@ export class WatcherService {
 
   async getHttpRequest(givenUrl: string) {
     const result = await firstValueFrom(
-      this.httpService.get(givenUrl).pipe(map((response) => response.data)),
+      this.httpService.get(givenUrl).pipe(
+        map((response) => response.data),
+        catchError((error) => {
+          throw new BadRequestException(error);
+        }),
+      ),
     );
-    // CrawlerService.logger.log(result);
     return result;
   }
 
-  parseHtmlAndCheckIsSoldOut(givenHtml: string) {
-    const $ = load(givenHtml);
-    const result = $('#frmView > div > div').children('.btn_restock_box').text()
-      ? true
-      : false;
+  parseHtmlAndCheckHasStock(resultRequest: string, jsPath: string) {
+    const $ = load(resultRequest);
+    const result = $(jsPath).text() ? true : false;
     return result;
     // CrawlerService.logger.log(result);
     // return result.length === 0 ? true : false; // sold out = true

@@ -27,6 +27,7 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/schedule": "^1.0.1",
+    "@nestjs/swagger": "^5.0.9",
     "@slack/client": "^5.0.2",
     "@slack/webhook": "^6.0.0",
     "@types/cheerio": "^0.22.30",
@@ -37,7 +38,8 @@
     "nestjs-slack-webhook": "^8.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
