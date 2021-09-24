@@ -3,7 +3,6 @@ version: '3.8'
 services:
   test:
     container_name: noti-test
-    image: noti-test:latest
     build:
       context: .
       target: nodebuild

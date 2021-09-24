@@ -77,9 +77,13 @@ describe('WatcherService', () => {
       const givenHtml = `<div id="frmView">
       <div class="dum1"><div class="dum2">
       <div class="btn_restock_box">Sold Out</div></div></div></div>`;
+      const jsPath = `#frmView > div > div > .btn_restock_box`;
 
       // when
-      const result = watcherService.parseHtmlAndCheckIsSoldOut(givenHtml);
+      const result = watcherService.parseHtmlAndCheckHasStock(
+        givenHtml,
+        jsPath,
+      );
 
       // then
       expect(result).toEqual(true);
@@ -91,9 +95,13 @@ describe('WatcherService', () => {
       const givenHtml = `<div id="frmView">
       <div class="dum1"><div class="dum2">
       <div class="btn_choice_box">구매하기</div></div></div></div>`;
+      const jsPath = `#frmView > div > div > .qwe`;
 
       // when
-      const result = watcherService.parseHtmlAndCheckIsSoldOut(givenHtml);
+      const result = watcherService.parseHtmlAndCheckHasStock(
+        givenHtml,
+        jsPath,
+      );
 
       // then
       expect(result).toEqual(false);
